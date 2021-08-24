@@ -218,13 +218,15 @@ $(document).ready(() => {
     })
     .then(student=>{
       if(student){
+        let day = new Date(student.birth);
+        let birth = `${day.getDate()}-${day.getMonth()}-${day.getFullYear()}`
         scanner.stop()
         let htmls = `
         MSSV: ${student.studentID} Họ Tên: ${student.name}
         <br>
         Giới Tính: ${student.gender}
         <br>
-        Ngày Sinh: ${student.birth}
+        Ngày Sinh: ${birth}
         <br>
         Địa Chỉ: ${student.address}
         <br>
