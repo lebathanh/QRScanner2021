@@ -192,8 +192,9 @@ $(document).ready(() => {
       $('#dow_img').html(htmls);
     })
   })
+});
 
-  QrScanner.WORKER_PATH = '/js/qr-scanner/qr-scanner-worker.min.js';
+QrScanner.WORKER_PATH = '/js/qr-scanner/qr-scanner-worker.min.js';
 
   const video = document.getElementById('qr-video');
   const camHasCamera = document.getElementById('cam-has-camera');
@@ -205,23 +206,21 @@ $(document).ready(() => {
   const fileSelector = document.getElementById('file-selector');
   const fileQrResult = document.getElementById('file-qr-result');
 
-  function setResult(label, result) {
-    label.textContent = result;
-    camQrResultTimestamp.textContent = new Date().toString();
-    label.style.color = 'teal';
-    clearTimeout(label.highlightTimeout);
-    label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
-    let url=`/getstd${result}`
+  QrScanner.hasCamera().then(hasCamera => camHasCamera.textContent = hasCamera);
+
+  const scanner = new QrScanner(video, result => {
+    setResult(camQrResult, result)
+    let url = `/getstd${result}`
     fetch(url)
-    .then(response=>{
-      return response.json()
-    })
-    .then(student=>{
-      if(student){
-        let day = new Date(student.birth);
-        let birth = `${day.getDate()}-${day.getMonth()}-${day.getFullYear()}`
-        scanner.stop()
-        let htmls = `
+      .then(response => {
+        return response.json()
+      })
+      .then(student => {
+        if (student) {
+          let day = new Date(student.birth);
+          let birth = `${day.getDate()}-${day.getMonth()}-${day.getFullYear()}`
+          scanner.stop()
+          let htmls = `
         MSSV: ${student.studentID} Họ Tên: ${student.name}
         <br>
         Giới Tính: ${student.gender}
@@ -232,15 +231,11 @@ $(document).ready(() => {
         <br>
         SĐT: ${student.phone}
         `;
-        $('#infor-result').html(htmls)
-        setTimeout(scanner.start(), 1000)
-      }
-    })
-  }
-
-  QrScanner.hasCamera().then(hasCamera => camHasCamera.textContent = hasCamera);
-
-  const scanner = new QrScanner(video, result => setResult(camQrResult, result));
+          $('#infor-result').html(htmls)
+          setTimeout(scanner.start(), 1000)
+        }
+      })
+  });
 
   window.scanner = scanner;
 
@@ -262,25 +257,58 @@ $(document).ready(() => {
   document.getElementById('stop-button').addEventListener('click', () => {
     scanner.stop();
   });
+function setResult(label, result) {
+  label.textContent = result;
+  camQrResultTimestamp.textContent = new Date().toString();
+  label.style.color = 'teal';
+  clearTimeout(label.highlightTimeout);
+  label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
+}
 
-  function ImagesFileAsURL() {
-    var fileSelected = document.getElementById('file-selector').files;
-    if (fileSelected.length > 0) {
-      QrScanner.scanImage(fileSelected[0])
-        .then(result => setResult(fileQrResult, result))
-        .catch(e => setResult(fileQrResult, e || 'No QR code found.'));
-      $('#showbf').empty();
-      for (var i = 0; i < fileSelected.length; i++) {
-        var fileToLoad = fileSelected[i];
-        var fileReader = new FileReader();
-        fileReader.onload = function (fileLoaderEvent) {
-          var srcData = fileLoaderEvent.target.result;
-          var newImage = document.createElement('img');
-          newImage.src = srcData;
-          $('#showbf').append(newImage);
-        }
-        fileReader.readAsDataURL(fileToLoad);
+function ImagesFileAsURL() {
+  var fileSelected = document.getElementById('file-selector').files;
+  if (fileSelected.length > 0) {
+    QrScanner.scanImage(fileSelected[0])
+      .then(result => {
+        setResult(fileQrResult, result)
+        let url = `/getstd${result}`
+        fetch(url)
+          .then(response => {
+            return response.json()
+          })
+          .then(student => {
+            if (student) {
+              let day = new Date(student.birth);
+              let birth = `${day.getDate()}-${day.getMonth()}-${day.getFullYear()}`
+              scanner.stop()
+              let htmls = `
+                MSSV: ${student.studentID} Họ Tên: ${student.name}
+                <br>
+                Giới Tính: ${student.gender}
+                <br>
+                Ngày Sinh: ${birth}
+                <br>
+                Địa Chỉ: ${student.address}
+                <br>
+                SĐT: ${student.phone}
+                `;
+              $('#file-info').html(htmls)
+              setTimeout(scanner.start(), 1000)
+            }
+          })
+      })
+      .catch(e => setResult(fileQrResult, e || 'No QR code found.'));
+    $('#showbf').empty();
+    for (var i = 0; i < fileSelected.length; i++) {
+      var fileToLoad = fileSelected[i];
+      var fileReader = new FileReader();
+      fileReader.onload = function (fileLoaderEvent) {
+        var srcData = fileLoaderEvent.target.result;
+        var newImage = document.createElement('img');
+        newImage.src = srcData;
+        $('#showbf').append(newImage);
       }
+      fileReader.readAsDataURL(fileToLoad);
     }
   }
-});
+}
