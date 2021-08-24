@@ -1,0 +1,138 @@
+<div id="begin_elem">
+    <div class="btn_top">
+        <button class="btn_qr" id="btn_cmrscan" type="button">Camera Scan</button>
+        <button class="btn_qr" id="btn_file" type="button">File Scan</button>
+        <button class="btn_qr" id="btn_list" type="button">Student List</button>
+    </div>
+</div>
+
+<div id="qr_box">
+    <div class="qr_box_item" id="qr_scanner">
+        <div>
+            <h1>WebCam Scan:</h1>
+            <button class="btn_qr" id="start-button">Start</button>
+            <button class="btn_qr" id="stop-button">Stop</button>
+        </div>
+
+        <div id="box-content">
+            <div id="video_zone">
+                <video id="qr-video"></video>
+            </div>
+            <div id="canvas_zone">
+                <br>
+                <b>Device has camera: </b>
+                <span id="cam-has-camera"></span>
+                <br>
+                <h2><b>QR code: </b></h2>
+                <h2 style="color: red;"><span id="cam-qr-result">None</span></h2>
+                <br>
+                <h2><b>Student's Information: </b></h2>
+                <h2 style="color: blue;"><span id="infor-result">None</span></h2>
+                <br>
+                <b>Last detected at: </b>
+                <span id="cam-qr-result-timestamp"></span>
+                <br>
+                <label>
+                    <input id="show-scan-region" type="checkbox"> Show scan region
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="qr_box_item" id="qr_file">
+        <h1>File Scan:</h1>
+        <input type="file" id="file-selector" onchange="ImagesFileAsURL()">
+        <b>Detected QR code: </b>
+        <span id="file-qr-result">None</span>
+        <br>
+        <div id="showbf"></div>
+    </div>
+
+    <div class="qr_box_item" id="student_box">
+        <div>
+            <table id="student_table">
+                <thead>
+                    <tr>
+                        <th>MSSV</th>
+                        <th>Họ và tên</th>
+                        <th>Ngày sinh</th>
+                        <th>Giới tính</th>
+                        <th>Địa chỉ</th>
+                        <th>Điện thoại</th>
+                    </tr>
+                </thead>
+                <tbody id="list_students">
+                    <% if(students != null){ %>
+                        <% for(var student in students){ %>
+                            <% let bday = students[student].birth %>
+                            <tr class="list_student-item">
+                                <td><%- students[student].studentID %></td>
+                                <td><%- students[student].name %></td>
+                                <td><%- bday.getFullYear() + "-" + (bday.getMonth() + 1) + "-" + bday.getDate() %></td>
+                                <td><%- students[student].gender %></td>
+                                <td><%- students[student].address %></td>
+                                <td>
+                                    <%- students[student].phone %>
+                                </td>
+                            </tr>
+                        <% } %>
+                    <% } %>
+            </table>
+        </div>
+
+        <div>
+            <div id="add_student_form">
+                <table>
+                    <tr>
+                        <td>Mã số sinh viên</td>
+                        <td><input id="studentID" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>Họ tên</td>
+                        <td><input id="name" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>Ngày sinh</td>
+                        <td><input id="birth" type="date"></td>
+                    </tr>
+                    <tr>
+                        <td>Giới tính</td>
+                        <td>
+                            <select id="gender">
+                                <option selected disabled hidden>Giới Tính</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Địa chỉ</td>
+                        <td><input id="address" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>Điện thoại</td>
+                        <td><input id="phone" type="tel"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button type="button" id="add_btn" style="display:inline" >Thêm</button>
+                            <button type="button" id="del-btn" style="display:none" >Xóa</button>
+                            <button type="button" id="edit-btn" style="display:none" >Sửa</button>
+                            <button type="button" id="cancel-btn" style="display:none" >Trở lại</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="qr_create">
+                <button style="background-color: brown; padding: 5px 10px; margin-top: 10px;" type="button" id="create-btn">Tạo Mã</button>
+                <p style="margin-top: 30px;">
+                <div id="id_qrcode">
+                    <img id="img-code">
+                </div>
+                <div id="dow_img"></div>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

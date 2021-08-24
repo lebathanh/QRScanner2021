@@ -1,0 +1,118 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+#begin_elem{
+    width: 100%;
+    height: 50px;
+    background-color: aqua;
+    text-align: center;
+}
+
+.btn_top{
+    line-height: 50px;
+}
+
+.btn_qr{
+    border: 1px solid;
+    padding: 5px;
+    box-shadow: 1px 3px #888888;
+    border-radius: 5%;
+}
+
+#qr_box{
+    width: 100%;
+    overflow: hidden;
+}
+
+.qr_box_item{
+    margin: 0 auto;
+    width: 100%;
+}
+
+#qr_scanner{
+    text-align: center;
+    display: block;
+}
+
+#video_zone{
+    width: 65%;
+    float: left;
+}
+
+#qr-video{
+    width: 95%;
+    height: auto;
+    border: 2px solid black;
+}
+
+#canvas_zone{
+    width: 35%;
+    float: right;
+}
+
+#qr_file{
+    text-align: center;
+    display: none;
+}
+
+#box-content{
+    margin-top: 5px;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-spacing: 0px;
+    padding: 5px;
+}
+
+#student_box{
+    padding-top: 20px;
+    margin: 0 auto;
+    display: none;
+}
+
+#student_table{
+    width: 100%;
+}
+
+#add_student_form{
+    padding-top: 50px;
+    width: 30%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#add_student_form table{
+    margin: 0 auto;
+}
+
+#list_students tr:hover{
+    background-color: grey;
+    color: honeydew;
+}
+
+.active{
+    background-color: grey;
+    color: honeydew;
+}
+
+#qr_create{
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#id_qrcode{
+    text-align: -webkit-center;
+    width: 100%;
+    margin: 0 auto;
+}
+
+#img-code{
+    width: 300px;
+    height: 300px;
+}
