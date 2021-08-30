@@ -196,31 +196,30 @@ $(document).ready(() => {
 
 QrScanner.WORKER_PATH = '/js/qr-scanner/qr-scanner-worker.min.js';
 
-  const video = document.getElementById('qr-video');
-  const camHasCamera = document.getElementById('cam-has-camera');
-  const camHasFlash = document.getElementById('cam-has-flash');
-  const flashToggle = document.getElementById('flash-toggle');
-  const flashState = document.getElementById('flash-state');
-  const camQrResult = document.getElementById('cam-qr-result');
-  const camQrResultTimestamp = document.getElementById('cam-qr-result-timestamp');
-  const fileSelector = document.getElementById('file-selector');
-  const fileQrResult = document.getElementById('file-qr-result');
+const video = document.getElementById('qr-video');
+const camHasCamera = document.getElementById('cam-has-camera');
+const camHasFlash = document.getElementById('cam-has-flash');
+const flashToggle = document.getElementById('flash-toggle');
+const flashState = document.getElementById('flash-state');
+const camQrResult = document.getElementById('cam-qr-result');
+const camQrResultTimestamp = document.getElementById('cam-qr-result-timestamp');
+const fileSelector = document.getElementById('file-selector');
+const fileQrResult = document.getElementById('file-qr-result');
 
-  QrScanner.hasCamera().then(hasCamera => camHasCamera.textContent = hasCamera);
+QrScanner.hasCamera().then(hasCamera => camHasCamera.textContent = hasCamera);
 
-  const scanner = new QrScanner(video, result => {
-    setResult(camQrResult, result)
-    let url = `/getstd${result}`
-    fetch(url)
-      .then(response => {
-        return response.json()
-      })
-      .then(student => {
-        if (student) {
-          let day = new Date(student.birth);
-          let birth = `${day.getDate()}-${day.getMonth()}-${day.getFullYear()}`
-          scanner.stop()
-          let htmls = `
+const scanner = new QrScanner(video, result => {
+  setResult(camQrResult, result)
+  let url = `/getstd${result}`
+  fetch(url)
+    .then(response => {
+      return response.json()
+    })
+    .then(student => {
+      if (student) {
+        let day = new Date(student.birth);
+        let birth = `${day.getDate()}-${day.getMonth()}-${day.getFullYear()}`
+        let htmls = `
         MSSV: ${student.studentID} Họ Tên: ${student.name}
         <br>
         Giới Tính: ${student.gender}
@@ -231,32 +230,32 @@ QrScanner.WORKER_PATH = '/js/qr-scanner/qr-scanner-worker.min.js';
         <br>
         SĐT: ${student.phone}
         `;
-          $('#infor-result').html(htmls)
-          setTimeout(scanner.start(), 1000)
-        }
-      })
-  });
+        $('#infor-result').html(htmls)
+        qrScanner.destroy();
+      }
+    })
+});
 
-  window.scanner = scanner;
+window.scanner = scanner;
 
+scanner.start();
+
+document.getElementById('show-scan-region').addEventListener('change', (e) => {
+  const input = e.target;
+  const label = input.parentNode;
+  label.parentNode.insertBefore(scanner.$canvas, label.nextSibling);
+  scanner.$canvas.style.display = input.checked ? 'block' : 'none';
+  scanner.$canvas.style.margin = '0 auto';
+  scanner.$canvas.style.width = '60%';
+});
+
+document.getElementById('start-button').addEventListener('click', () => {
   scanner.start();
+});
 
-  document.getElementById('show-scan-region').addEventListener('change', (e) => {
-    const input = e.target;
-    const label = input.parentNode;
-    label.parentNode.insertBefore(scanner.$canvas, label.nextSibling);
-    scanner.$canvas.style.display = input.checked ? 'block' : 'none';
-    scanner.$canvas.style.margin = '0 auto';
-    scanner.$canvas.style.width = '60%';
-  });
-
-  document.getElementById('start-button').addEventListener('click', () => {
-    scanner.start();
-  });
-
-  document.getElementById('stop-button').addEventListener('click', () => {
-    scanner.stop();
-  });
+document.getElementById('stop-button').addEventListener('click', () => {
+  scanner.stop();
+});
 function setResult(label, result) {
   label.textContent = result;
   camQrResultTimestamp.textContent = new Date().toString();
